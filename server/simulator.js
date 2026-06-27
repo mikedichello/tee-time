@@ -29,22 +29,24 @@ function startSimulator(io, db) {
     }
     if (!targetHole) return;
 
-    // Simulate 1–4 strokes (most are 2–3 for minigolf)
-    const strokes = Math.floor(Math.random() * 3) + 1;
-    const score = db.setScore(game.id, player.id, targetHole, strokes);
+    // Simulate ball delivering its own stroke count (as active ball firmware would)
+    const strokeCount = Math.floor(Math.random() * 3) + 1;
+    const score = db.setScore(game.id, player.id, targetHole, strokeCount);
 
     const state = db.getFullGameState(game.id);
-    io.emit("score_updated", {
+    io.emit("ball_detected", {
       gameId: game.id,
       playerId: player.id,
+      playerName: player.name,
       hole: targetHole,
-      strokes,
+      strokes: strokeCount,
+      fromBall: true,
       simulated: true,
     });
     io.emit("game_state", state);
 
     console.log(
-      `[sim] ${player.name} hole ${targetHole} → ${strokes} stroke(s)`
+      `[sim] ${player.name} hole ${targetHole} → ${strokeCount} stroke(s) (from ball)`
     );
   };
 

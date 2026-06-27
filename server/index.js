@@ -36,15 +36,17 @@ io.on("connection", (socket) => {
     socket.emit("game_state", db.getFullGameState(activeGame.id));
   }
 
-  // Hardware RFID bridge sends this event when a ball is detected
+  // Hardware RFID bridge sends this event when a ball is detected at a hole cup.
+  // strokeCount is read directly from the ball's NFC memory (written by the
+  // ball's onboard accelerometer MCU on each putter impact).
   socket.on("rfid_event", (data) => {
     if (data.secret !== RFID_SECRET) {
       console.warn("[ws] rfid_event rejected: wrong secret");
       return;
     }
 
-    const { ballUid, hole } = data;
-    console.log(`[rfid] ball ${ballUid} at hole ${hole}`);
+    const { ballUid, hole, strokeCount } = data;
+    console.log(`[rfid] ball ${ballUid} at hole ${hole} — ${strokeCount} stroke(s) (from ball)`);
 
     const game = db.getActiveGame();
     if (!game) {
@@ -59,7 +61,10 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const score = db.incrementStroke(game.id, player.id, hole);
+    // Use stroke count from the ball. Fall back to 1 if ball firmware
+    // didn't record any (e.g. old passive tag used during development).
+    const strokes = (typeof strokeCount === "number" && strokeCount > 0) ? strokeCount : 1;
+    const score = db.setScore(game.id, player.id, hole, strokes);
     const state = db.getFullGameState(game.id);
 
     io.emit("ball_detected", {
@@ -69,6 +74,7 @@ io.on("connection", (socket) => {
       hole,
       strokes: score.strokes,
       ballUid,
+      fromBall: true,
     });
     io.emit("game_state", state);
   });
