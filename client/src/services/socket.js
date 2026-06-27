@@ -1,0 +1,12 @@
+import { io } from "socket.io-client";
+
+const SERVER_URL =
+  import.meta.env.VITE_SERVER_URL || window.location.origin;
+
+export const socket = io(SERVER_URL, {
+  transports: ["websocket", "polling"],
+  reconnectionDelay: 1000,
+  reconnectionAttempts: Infinity,
+});
+
+export default socket;

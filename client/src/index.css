@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-golf-green text-white min-h-screen;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .score-cell {
+    @apply w-10 h-10 flex items-center justify-center rounded-lg text-sm font-bold transition-all;
+  }
+  .score-hole-in-one { @apply bg-yellow-400 text-black scale-110; }
+  .score-eagle       { @apply bg-purple-500 text-white; }
+  .score-birdie      { @apply bg-blue-500 text-white; }
+  .score-par         { @apply bg-gray-600 text-white; }
+  .score-bogey       { @apply bg-orange-500 text-white; }
+  .score-double      { @apply bg-red-500 text-white; }
+  .score-over        { @apply bg-red-700 text-white; }
+  .score-empty       { @apply bg-gray-800 text-gray-500; }
+
+  .card {
+    @apply bg-white/10 backdrop-blur-sm rounded-xl border border-white/20;
+  }
+  .btn-primary {
+    @apply bg-golf-flag hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors;
+  }
+  .btn-secondary {
+    @apply bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-4 rounded-lg transition-colors;
+  }
+  .btn-green {
+    @apply bg-golf-fairway hover:bg-golf-green text-white font-bold py-2 px-4 rounded-lg transition-colors;
+  }
+}

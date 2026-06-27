@@ -1,0 +1,4 @@
+mfrc522==0.0.7
+RPi.GPIO==0.7.1
+websocket-client==1.7.0
+requests==2.31.0
